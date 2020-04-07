@@ -33,6 +33,7 @@ shouldStop = threading.Event()
 
 recorders = []
 recorders.append(RecordVideo(os.path.join(".", "video0.avi"), 0))
+recorders.append(RecordVideo(os.path.join(".", "video1.avi"), 1))
 
 threads = [threading.Thread(target=r.start, args=(shouldStop,), daemon=True) for r in recorders]
 
