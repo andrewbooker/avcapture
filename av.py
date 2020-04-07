@@ -3,14 +3,31 @@
 import threading
 import keyboard
 import os
+import datetime
+import time
+import sys
 from utils.video import RecordVideo
+from utils.audio import RecordAudio
+
+now = time.time()
+newPath = datetime.datetime.fromtimestamp(now).strftime("%Y-%m-%d/%H_%M_%S")
+fnBase = datetime.datetime.fromtimestamp(now).strftime("%Y-%m-%d_%H%M%S")
+fqp = os.path.join(sys.argv[1], newPath)
+
+if not os.path.exists(fqp):
+    os.makedirs(fqp)
 
 shouldStop = threading.Event()
 
+video = [(0, 30), (1, 30)]
+audio = [4]
 
 recorders = []
-recorders.append(RecordVideo(os.path.join(".", "video0.avi"), 0, 30))
-recorders.append(RecordVideo(os.path.join(".", "video1.avi"), 1, 25))
+for v in video:
+	recorders.append(RecordVideo(os.path.join(fqp, "video%d_%s.avi" % (v[0], fnBase)), v[0], v[1]))
+
+for a in audio:
+	recorders.append(RecordAudio(os.path.join(fqp, "audio%d_%s.wav" % (a, fnBase)), a))
 
 threads = [threading.Thread(target=r.start, args=(shouldStop,), daemon=True) for r in recorders]
 

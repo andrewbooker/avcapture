@@ -37,28 +37,3 @@ class RecordAudio():
 
                 print("stopping audio %s" % self.deviceIdx)
 
-deviceIdx = 4
-
-import threading
-import keyboard
-import os
-
-shouldStop = threading.Event()
-
-
-recorders = []
-recorders.append(RecordAudio(os.path.join(".", "audio0.wav"), deviceIdx))
-
-threads = [threading.Thread(target=r.start, args=(shouldStop,), daemon=True) for r in recorders]
-
-print ("Starting recording. Press 'q' to stop.")
-for t in threads:
-	t.start()
-
-keyboard.wait("q")
-print ("stopping...")
-shouldStop.set()
-
-for t in threads:
-	t.join()
-print("done")
