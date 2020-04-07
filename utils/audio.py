@@ -27,13 +27,18 @@ class RecordAudio():
     def __init__(self, fqfn, deviceIdx):
         self.fqfn = fqfn
         self.deviceIdx = deviceIdx
-        self.cb = Callback()
+        
+        device = sd.query_devices()[deviceIdx]
+        self.channels = int(device["max_input_channels"])
+        self.sampleRate = int(device["default_samplerate"])
+        print("%d channels at %d on %s" % (self.channels, self.sampleRate, device["name"]))
 
     def start(self, shouldStop):
-        with sf.SoundFile(self.fqfn, mode="x", samplerate=44100, channels=1, subtype="PCM_24") as file:
-            with sd.InputStream(samplerate=44100, device=self.deviceIdx, channels=1, callback=self.cb.make()):
+        cb = Callback()
+        with sf.SoundFile(self.fqfn, mode="x", samplerate=self.sampleRate, channels=self.channels, subtype="PCM_24") as file:
+            with sd.InputStream(samplerate=self.sampleRate, device=self.deviceIdx, channels=self.channels, callback=cb.make()):
                 while not shouldStop.is_set():
-                    file.write(self.cb.q.get())
+                    file.write(cb.q.get())
 
                 print("stopping audio %s" % self.deviceIdx)
 
