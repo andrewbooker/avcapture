@@ -2,21 +2,22 @@
 
 from zipfile import ZipFile
 import os
-import sys
 
-workingDir = sys.argv[1]
-zipName = os.path.basename(os.path.dirname(workingDir))
 
-files = {}
-subDirs = filter(lambda f: f.is_dir(), os.scandir(workingDir))
-for d in subDirs:
-    files[d.name] = [f.name for f in filter(lambda f: f.is_file(), os.scandir(os.path.join(workingDir, d.name)))]
+class ZipFiles():
+    def create(self, workingDir):
+        print ("zipping %s" % workingDir)
+        zipName = os.path.basename(workingDir)
 
-os.chdir(workingDir)
+        files = {}
+        subDirs = filter(lambda f: f.is_dir(), os.scandir(workingDir))
+        for d in subDirs:
+            files[d.name] = [f.name for f in filter(lambda f: f.is_file(), os.scandir(os.path.join(workingDir, d.name)))]
 
-with ZipFile("../%s.zip" % zipName, "w") as zipfile:
-    for subDir in files:
-        print("writing %s" % subDir)
-        [zipfile.write(os.path.join(subDir, f)) for f in files[subDir]]
+        os.chdir(workingDir)
 
-print("done")
+        with ZipFile("../%s.zip" % zipName, "w") as zipfile:
+            for subDir in files:
+                print("writing %s" % subDir)
+                [zipfile.write(os.path.join(subDir, f)) for f in files[subDir]]
+
