@@ -13,7 +13,10 @@ now = time.time()
 pathBase = datetime.datetime.fromtimestamp(now).strftime("%Y-%m-%d")
 pathTime = datetime.datetime.fromtimestamp(now).strftime("%H_%M_%S")
 fnBase = datetime.datetime.fromtimestamp(now).strftime("%Y-%m-%d_%H%M%S")
-fqp = os.path.join(sys.argv[1], pathBase, pathTime)
+
+baseDir = sys.argv[1]
+username = sys.argv[2]
+fqp = os.path.join(baseDir, pathBase, pathTime)
 
 if not os.path.exists(fqp):
     os.makedirs(fqp)
@@ -44,7 +47,10 @@ for t in threads:
 
 from utils.zipfiles import ZipFiles
 zipDir = os.path.join(sys.argv[1], pathBase)
-ZipFiles().create(os.path.join(sys.argv[1], zipDir))
+ZipFiles().create(zipDir)
+
+from utils.saveToMedia import CopyToMedia
+CopyToMedia().save("%s.zip" % zipDir, "/media/%s" % username)
 
 print("done")
     
