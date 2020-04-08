@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 import os
 
 
@@ -16,7 +16,7 @@ class ZipFiles():
 
         os.chdir(workingDir)
 
-        with ZipFile("../%s.zip" % zipName, "w") as zipfile:
+        with ZipFile("../%s.zip" % zipName, "w", ZIP_DEFLATED) as zipfile:
             for subDir in files:
                 print("writing %s" % subDir)
                 [zipfile.write(os.path.join(subDir, f)) for f in files[subDir]]
