@@ -8,10 +8,9 @@ workingDir = sys.argv[1]
 zipName = os.path.basename(os.path.dirname(workingDir))
 
 files = {}
-subDirs = os.scandir(workingDir)
+subDirs = filter(lambda f: f.is_dir(), os.scandir(workingDir))
 for d in subDirs:
-    files[d.name] = os.listdir(os.path.join(workingDir, d.name))
-
+    files[d.name] = [f.name for f in filter(lambda f: f.is_file(), os.scandir(os.path.join(workingDir, d.name)))]
 
 os.chdir(workingDir)
 
