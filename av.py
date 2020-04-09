@@ -8,6 +8,7 @@ import time
 import sys
 from utils.video import RecordVideo
 from utils.audio import RecordAudio
+from utils.availableDevices import *
 
 now = time.time()
 pathBase = datetime.datetime.fromtimestamp(now).strftime("%Y-%m-%d")
@@ -21,8 +22,8 @@ fqp = os.path.join(baseDir, pathBase, pathTime)
 if not os.path.exists(fqp):
     os.makedirs(fqp)
 
-video = [(0, 30), (1, 30)]
-audio = [4]
+video = [(0, 30)]
+audio = usableAudioDevices().keys()
 
 recorders = []
 for v in video:
