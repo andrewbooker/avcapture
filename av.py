@@ -22,7 +22,7 @@ fqp = os.path.join(baseDir, pathBase, pathTime)
 if not os.path.exists(fqp):
     os.makedirs(fqp)
 
-video = [(0, 30)]
+video = usableVideoDevices()
 audio = usableAudioDevices().keys()
 
 recorders = []

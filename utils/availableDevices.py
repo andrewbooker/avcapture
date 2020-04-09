@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sounddevice as sd
+import os
 
 def usableAudioDevices():
     usable = {}
@@ -12,4 +13,12 @@ def usableAudioDevices():
             usable[d] = dev["name"]
 
     return usable
+
+
+def usableVideoDevices():
+    return [(int(f.name[-1:]), 30) for f in filter(lambda f: "video" in f.name, os.scandir("/dev"))]
+
+print(usableVideoDevices())
     
+
+
