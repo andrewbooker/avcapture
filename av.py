@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import threading
-import keyboard
 import datetime
 import time
 from utils.video import RecordVideo
@@ -46,16 +45,15 @@ for a in audio:
 shouldStop = threading.Event()
 threads = [threading.Thread(target=r.start, args=(shouldStop,), daemon=True) for r in recorders]
 
+import readchar
 print ("Starting recording. Press 'q' to stop.")
-for t in threads:
-	t.start()
-
-keyboard.wait("q")
-print ("stopping...")
-shouldStop.set()
-
-for t in threads:
-	t.join()
+[t.start() for t in threads]
+while not shouldStop.is_set():
+    c = readchar.readchar()
+    if c == "q":
+        print("stopping...")
+        shouldStop.set()
+        [t.join() for t in threads]
 
 from utils.zipfiles import ZipFiles
 zipDir = os.path.join(sys.argv[1], pathBase)
