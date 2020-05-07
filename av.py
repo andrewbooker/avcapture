@@ -2,13 +2,24 @@
 
 import threading
 import keyboard
-import os
 import datetime
 import time
-import sys
 from utils.video import RecordVideo
 from utils.audio import RecordAudio
 from utils.availableDevices import *
+
+import os
+import sys
+parentDir = os.path.dirname(os.getcwd())
+sys.path.append(parentDir)
+def checkImport(lib):
+    if not os.path.exists(os.path.join(parentDir, lib)):
+        print("%s library not found." % lib)
+        print("please clone github.com/andrewbooker/%s.git into %s" % (lib, parentDir))
+        exit()
+
+checkImport("mediautils")
+from mediautils.audiodevices import UsbAudioDevices
 
 now = time.time()
 pathBase = datetime.datetime.fromtimestamp(now).strftime("%Y-%m-%d")
@@ -23,7 +34,7 @@ if not os.path.exists(fqp):
     os.makedirs(fqp)
 
 video = usableVideoDevices()
-audio = usableAudioDevices().keys()
+audio = UsbAudioDevices().keys()
 
 recorders = []
 for v in video:
