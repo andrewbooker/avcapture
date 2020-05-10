@@ -3,7 +3,7 @@
 import threading
 import datetime
 import time
-import subprocess
+import getpass
 from utils.video import RecordVideo
 from utils.audio import RecordAudio
 from utils.availableDevices import *
@@ -27,7 +27,7 @@ pathTime = datetime.datetime.fromtimestamp(now).strftime("%H_%M_%S")
 fnBase = datetime.datetime.fromtimestamp(now).strftime("%Y-%m-%d_%H%M%S")
 
 baseDir = sys.argv[1]
-username = subprocess.check_output("echo $USER", shell=True).decode("utf-8").strip()
+username = getpass.getuser()
 fqp = os.path.join(baseDir, pathBase, pathTime)
 
 if not os.path.exists(fqp):
