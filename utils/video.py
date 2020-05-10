@@ -1,27 +1,28 @@
 #!/usr/bin/env python
 
 import cv2
+import time
 
 class RecordVideo():
-	def __init__(self, fqfn, deviceIdx, fps):
-		self.fqfn = fqfn
-		self.deviceIdx = deviceIdx
-		self.fps = fps
-	
-	def start(self, shouldStop):
-		fourcc = cv2.VideoWriter_fourcc(*'XVID')
-		cap = cv2.VideoCapture(self.deviceIdx)
-		out = cv2.VideoWriter(self.fqfn, fourcc, float(self.fps), (640, 480))
+    def __init__(self, fqfn, deviceIdx, fps):
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        self.cap = cv2.VideoCapture(deviceIdx)
+        self.out = cv2.VideoWriter(fqfn, fourcc, float(fps), (640, 480))
+        self.deviceIdx = deviceIdx
+        while not self.cap.isOpened():
+            time.sleep(0.1)
+        print("video initialised on", self.deviceIdx)
 
-		while cap.isOpened() and not shouldStop.is_set():
-			ret, frame = cap.read()
-			if ret==True:
-				out.write(frame)
-			else:
-				break
-				
-		print("stopping video %d" % self.deviceIdx)
-		out.release()
-		cap.release()
+    def start(self, shouldStop):
+        while self.cap.isOpened() and not shouldStop.is_set():
+            ret, frame = self.cap.read()
+            if ret == True:
+                self.out.write(frame)
+            else:
+                break
+
+        print("stopping video on", self.deviceIdx)
+        self.out.release()
+        self.cap.release()
 
 
