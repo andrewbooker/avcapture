@@ -63,18 +63,21 @@ while not shouldStop.is_set():
         [t.join() for t in threads]
 
 from utils.zipfiles import ZipFiles
-zipDir = os.path.join(sys.argv[1], pathBase)
+zipDir = os.path.join(baseDir, pathBase)
 ZipFiles().create(zipDir)
 
 from utils.saveToMedia import CopyToMedia
-CopyToMedia().save("%s.zip" % zipDir, "/media/%s" % username)
+media = CopyToMedia()
+media.save("%s.zip" % zipDir, "/media/%s" % username)
 
 if len(videoFiles) == 1:
+    mp4 = os.path.join(baseDir, "%s.mp4" % fnBase)
     cmdInVideo = "ffmpeg -i %s" % videoFiles[0]
     cmdInAudio = " ".join(["-i %s" % f for f in audioFiles])
     cmdAudioMix = "-filter_complex \"amix=inputs=%d\"" % len(audioFiles)
-    cmdOut = "-b:a 192k -y %s" % os.path.join(baseDir, "%s.mp4" % fnBase)
+    cmdOut = "-b:a 192k -y %s" % mp4
     os.system(" ".join([cmdInVideo, cmdInAudio, cmdAudioMix, cmdOut]))
+    media.save(mp4, "/media/%s" % username)
 
 print("done")
 
