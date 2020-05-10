@@ -70,8 +70,12 @@ from utils.saveToMedia import CopyToMedia
 CopyToMedia().save("%s.zip" % zipDir, "/media/%s" % username)
 
 if len(videoFiles) == 1:
-    print("ffmpeg -i", videoFiles[0], " ".join(["-i %s" % f for f in audioFiles]), "-filter_complex \"amix=inputs=%d\" -b:a 192k -y" % len(audioFiles), os.path.join(baseDir, "%s.mp4" % fnBase))
+    cmdInVideo = "ffmpeg -i %s" % videoFiles[0]
+    cmdInAudio = " ".join(["-i %s" % f for f in audioFiles])
+    cmdAudioMix = "-filter_complex \"amix=inputs=%d\"" % len(audioFiles)
+    cmdOut = "-b:a 192k -y %s" % os.path.join(baseDir, "%s.mp4" % fnBase)
+    os.system(" ".join([cmdInVideo, cmdInAudio, cmdAudioMix, cmdOut]))
 
 print("done")
-    
+
 
