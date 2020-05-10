@@ -37,11 +37,17 @@ video = usableVideoDevices()
 audio = UsbAudioDevices().keys()
 
 recorders = []
+audioFiles = []
+videoFiles = []
 for v in video:
-	recorders.append(RecordVideo(os.path.join(fqp, "video%d_%s.avi" % (v[0], fnBase)), v[0], v[1]))
+    vf = os.path.join(fqp, "video%d_%s.avi" % (v[0], fnBase))
+    videoFiles.append(vf)
+    recorders.append(RecordVideo(vf, v[0], v[1]))
 
 for a in audio:
-	recorders.append(RecordAudio(os.path.join(fqp, "audio%d_%s.wav" % (a, fnBase)), a))
+    af = os.path.join(fqp, "audio%d_%s.wav" % (a, fnBase))
+    audioFiles.append(af)
+    recorders.append(RecordAudio(af, a))
 
 shouldStop = threading.Event()
 threads = [threading.Thread(target=r.start, args=(shouldStop,), daemon=True) for r in recorders]
@@ -62,6 +68,9 @@ ZipFiles().create(zipDir)
 
 from utils.saveToMedia import CopyToMedia
 CopyToMedia().save("%s.zip" % zipDir, "/media/%s" % username)
+
+if len(videoFiles) == 1:
+    print("ffmpeg -i", videoFiles[0], " ".join(["-i %s" % f for f in audioFiles]), "-filter_complex \"amix=inputs=%d\" -b:a 192k -y" % len(audioFiles), os.path.join(baseDir, "%s.mp4" % fnBase))
 
 print("done")
     
