@@ -6,7 +6,6 @@ import time
 import getpass
 from utils.video import RecordVideo
 from utils.audio import RecordAudio
-from utils.availableDevices import *
 
 import os
 import sys
@@ -33,7 +32,7 @@ fqp = os.path.join(baseDir, pathBase, pathTime)
 if not os.path.exists(fqp):
     os.makedirs(fqp)
 
-video = usableVideoDevices()
+video = [(0, 25)]
 audio = UsbAudioDevices().keys()
 
 recorders = []
